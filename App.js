@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import CheckpointListScreen from './src/screens/CheckpointListScreen';
 import CategoryListScreen from './src/screens/CategoryListScreen';
+import StockListScreen from './src/screens/StockListScreen';
 
 const Stack = createStackNavigator();
 
@@ -16,6 +17,7 @@ function App() {
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="CheckpointListScreen" component={CheckpointListScreen} />
           <Stack.Screen name="CategoryListScreen" component={CategoryListScreen} />
+          <Stack.Screen name="StockListScreen" component={StockListScreen} />
         </Stack.Navigator>
       </NavigationContainer>
     </View>

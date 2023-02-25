@@ -7,7 +7,10 @@ export default function CategoryListScreen({ navigation, route }) {
   const { checkpoint } = route.params;
   return (
     <View style={styles.container}>
-      <CategoryList checkpoint={checkpoint}></CategoryList>
+      <CategoryList
+        navigation={navigation}
+        checkpoint={checkpoint}
+      ></CategoryList>
     </View>
   );
 }

@@ -15,7 +15,7 @@ const DATA = [
   { id: 3, name: "Category 3" },
 ];
 
-export default function CategoryList({ checkpoint }) {
+export default function CategoryList({ checkpoint, navigation }) {
   const [searchQuery, setSearchQuery] = useState("");
   const [categories, setCategories] = useState(DATA);
 

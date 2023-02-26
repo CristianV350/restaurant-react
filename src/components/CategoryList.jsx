@@ -6,8 +6,10 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
+import useCategoryStore from "../store/category.reducer";
+import debounce from "../utils/debounce";
 
 const DATA = [
   { id: 1, name: "Category 1" },
@@ -16,35 +18,80 @@ const DATA = [
 ];
 
 export default function CategoryList({ checkpoint, navigation }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [categories, setCategories] = useState(DATA);
+  const {
+    selectedCategory,
+    categories,
+    handleSetSelectedCategory,
+    fetchCategories,
+    updateCategory,
+    addCategory,
+  } = useCategoryStore();
 
+  const [searchQuery, setSearchQuery] = useState("");
+  const [rows, setRows] = useState([...categories]);
+
+  useEffect(() => {
+    setRows([...categories]);
+  }, [categories]);
+
+  console.log("CategoryList: ", rows);
   const handleSearch = (query) => {
     setSearchQuery(query);
-    const filteredData = DATA.filter((item) =>
+    const filteredData = rows.filter((item) =>
       item.name.toLowerCase().includes(query.toLowerCase())
     );
-    setCategories(filteredData);
+    setRows(filteredData);
   };
 
   const handleAddCategory = () => {
     const newCategory = {
-      id: `${categories.length + 1}`,
-      name: `Checkpoint ${categories.length + 1}`,
+      id: `${rows.length + 1}`,
+      name: `Category ${rows.length + 1}`,
     };
-    setCategories([...categories, newCategory]);
+    addCategory(newCategory);
+    setRows([...rows, newCategory]);
+  };
+
+  const handleCategoryNameSave = debounce((categoryId, newName) => {
+    if (!newName) return;
+    updateCategory(categoryId, newName);
+  }, 500);
+
+  const handleCategoryNameCancel = () => {
+    // handleSetSelectedCategory(null);
   };
 
   const renderItem = ({ item }) => {
+    const isEditing = selectedCategory && selectedCategory.id === item.id;
     return (
       <View style={styles.categoryItem}>
         <TouchableOpacity
           key={item.id}
-          onPress={() =>
-            navigation.navigate("StockListScreen", { category: item })
-          }
+          // onPress={() =>
+          //   navigation.navigate("StockListScreen", { category: item })
+          // }
+          onPress={() => handleSetSelectedCategory(item)}
         >
-          <Text>{item.name}</Text>
+          {isEditing ? (
+            <TextInput
+              onChangeText={(newName) =>
+                handleCategoryNameSave(item.id, newName)
+              }
+              onBlur={(event) => {
+                handleCategoryNameSave(item.id, event.nativeEvent.text);
+                handleSetSelectedCategory(null);
+              }}
+              autoFocus={true}
+              style={[
+                styles.categoryNameInput,
+                styles.categoryNameInputFocused,
+              ]}
+            >
+              {item.name}
+            </TextInput>
+          ) : (
+            <Text style={styles.categoryName}>{item.name}</Text>
+          )}
         </TouchableOpacity>
       </View>
     );
@@ -63,7 +110,7 @@ export default function CategoryList({ checkpoint, navigation }) {
       <Text style={styles.checkpoint}>Checkpoint: {checkpoint.name}</Text>
       <View style={styles.categoryList}>
         <FlatList
-          data={categories}
+          data={rows}
           renderItem={renderItem}
           keyExtractor={(item) => item.id}
         />
@@ -103,11 +150,27 @@ const styles = StyleSheet.create({
     padding: 16,
     alignContent: "center",
   },
+  editButtons: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   categoryItem: {
     backgroundColor: "white",
     padding: 16,
     borderRadius: 8,
     marginBottom: 16,
+  },
+  categoryNameInputFocused: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 4,
+    padding: 8,
+    marginBottom: 8,
+    height: 50,
+    fontSize: 18,
+  },
+  categoryNameInput: {
+    fontSize: 16,
   },
   categoryName: {
     fontWeight: "bold",

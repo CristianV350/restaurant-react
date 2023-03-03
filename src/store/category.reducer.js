@@ -26,6 +26,7 @@ export default function useCategoryStore() {
     const exists = categories.find((i) => i.name === category.name);
     if (!exists) {
       setCategories([...categories, category]);
+      return category
     }
   }
 

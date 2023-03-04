@@ -38,12 +38,7 @@ function CategoryItem({
 
   return (
     <View style={styles.categoryItem}>
-      <TouchableOpacity
-        style={styles.categoryContainer}
-        onPress={() =>
-          navigation.navigate("StockListScreen", { category: item })
-        }
-      >
+      <TouchableOpacity style={styles.categoryContainer}>
         {isEditing ? (
           <TextInput
             autoFocus={true}
@@ -51,22 +46,23 @@ function CategoryItem({
             value={categoryName}
             onChangeText={handleChangeText}
             onBlur={handleOnBlur}
+            onPointerEnter={handleOnBlur}
             returnKeyType="done"
           />
         ) : (
           <View style={styles.categoryNameContainer}>
-            <Text style={styles.categoryName} onPress={handleEdit}>
-              {item.name}
-            </Text>
             <TouchableOpacity
-              style={styles.enterButton}
-              onPress={() => handleSetSelectedCategory(item)}
+              onPress={() =>
+                navigation.navigate("StockListScreen", { category: item })
+              }
             >
-              <Ionicons
-                name="arrow-forward-circle-outline"
-                size={48}
-                color="white"
-              />
+              <Text style={styles.categoryName}>{item.name}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.enterButton}>
+              <Text style={styles.enterButtonText} onPress={handleEdit}>
+                EDIT
+              </Text>
             </TouchableOpacity>
           </View>
         )}
@@ -134,10 +130,10 @@ export default function CategoryList({ checkpoint, navigation }) {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.searchContainer}>
+    <View style={global.container}>
+      <View style={global.searchContainer}>
         <TextInput
-          style={styles.searchInput}
+          style={global.searchInput}
           placeholder="Search categories"
           value={searchQuery}
           onChangeText={handleSearch}
@@ -150,8 +146,8 @@ export default function CategoryList({ checkpoint, navigation }) {
         extraData={selectedCategory}
       />
 
-      <View style={styles.actionBar}>
-        <TouchableOpacity style={styles.addButton} onPress={handleAddCategory}>
+      <View style={global.actionBar}>
+        <TouchableOpacity style={global.addButton} onPress={handleAddCategory}>
           <Ionicons name="add" size={24} color="white" />
         </TouchableOpacity>
       </View>
@@ -159,26 +155,10 @@ export default function CategoryList({ checkpoint, navigation }) {
   );
 }
 
+import global from "../styles/style";
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-  },
-  searchContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 10,
-  },
-  searchInput: {
-    flex: 1,
-    height: 40,
-    borderWidth: 1,
-    borderRadius: 20,
-    paddingHorizontal: 10,
-    marginRight: 10,
-  },
   categoryItem: {
-    backgroundColor: "#292929",
+    backgroundColor: "#ffffff",
     borderRadius: 8,
     marginHorizontal: 16,
     marginVertical: 8,
@@ -186,7 +166,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    shadowColor: "#fff",
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -211,33 +191,26 @@ const styles = StyleSheet.create({
   categoryName: {
     fontSize: 18,
     marginLeft: 16,
-    color: "#fff",
+    color: "#303334",
   },
   enterButton: {
-    marginLeft: "auto",
-    padding: 8,
-    borderRadius: 20,
+    backgroundColor: "#79c006",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  enterButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
   },
   categoryNameInput: {
     fontSize: 16,
-    borderWidth: 1,
     borderRadius: 10,
     padding: 25,
-    borderColor: "#fff",
-    color: "#fff",
-  },
-  actionBar: {
-    backgroundColor: "white",
-    borderTopWidth: 1,
-    borderTopColor: "#EFEFEF",
-    padding: 16,
-    flexDirection: "row",
-    justifyContent: "center",
-  },
-  addButton: {
-    backgroundColor: "green",
-    padding: 16,
-    borderRadius: 8,
+    color: "#303334",
   },
 });
 

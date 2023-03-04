@@ -1,32 +1,21 @@
 import { useState } from 'react';
 import axios from 'axios';
-import IngredientService from '../services/CategoryService';
+import IngredientService from '../services/IngredientService';
 
 const modelIngredient = {
   name: '',
   price: 0,
-  purchase_price: 0,
+  quantity: 0,
   measure: 'kg',
-  portions: 0,
-  type: 'ingredient',
-  edited: false,
 };
 
 const useIngredientStore = () => {
   const [ingredients, setIngredients] = useState([]);
 
-  const fetch = async () => {
-    if (!activeCategory) return [];
-    const result = await axios.get('/api/ingredient/' + activeCategory);
-    setIngredients(
-      result.data.map((item) => {
-        return {
-          ...item,
-          type: 'ingredient',
-          created: true,
-        };
-      })
-    );
+  const fetchIngredients = async (id) => {
+    if (!id) return [];
+    const result = await IngredientService.get(id)
+    setIngredients(result);
   };
 
   const getByCategory = async (id) => {
@@ -44,18 +33,13 @@ const useIngredientStore = () => {
   };
 
   const addIngredient = async (data) => {
-    const response = await axios.post('/api/ingredient', data);
-    if (response.status !== 200) {
-      console.error(response.error);
-      return;
-    }
+    const result = await IngredientService.save(data);
+    if (result.error) return;
 
-    const result = response.data;
     const exists = ingredients.find((i) => i.name === result.name);
     if (!exists) {
-      const ingredient = { ...result };
-      ingredient.created = true;
-      setIngredients([...ingredients, ingredient]);
+      setIngredients([...ingredients, result]);
+      return result;
     }
   };
 
@@ -73,7 +57,7 @@ const useIngredientStore = () => {
 
   return {
     ingredients,
-    fetch,
+    fetchIngredients,
     getByCategory,
     addIngredient,
     updateIngredient,

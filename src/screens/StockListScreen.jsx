@@ -3,10 +3,14 @@ import { StyleSheet, View } from "react-native";
 import StockList from "../components/StockList";
 
 export default function StockListScreen({ navigation, route }) {
-  const { category } = route.params;
+  const { category, checkpoint } = route.params;
   return (
     <View style={styles.container}>
-      <StockList category={category} navigation={navigation} />
+      <StockList
+        category={category}
+        checkpoint={checkpoint}
+        navigation={navigation}
+      />
     </View>
   );
 }

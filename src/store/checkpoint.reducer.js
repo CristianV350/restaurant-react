@@ -60,7 +60,7 @@ export function useCheckpointStore() {
     dispatch({ type: "DELETE_CHECKPOINT", payload: id });
   }
 
-  function setActiveCheckpoint(id) {
+  function handleSetSelectedCheckpoint(id) {
     if (id === state.activeCheckpoint) return;
     dispatch({ type: "SET_ACTIVE_CHECKPOINT", payload: id });
   }
@@ -72,6 +72,6 @@ export function useCheckpointStore() {
     addCheckpoint,
     updateCheckpoint,
     deleteCheckpoint,
-    setActiveCheckpoint,
+    handleSetSelectedCheckpoint,
   };
 }

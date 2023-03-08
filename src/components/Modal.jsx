@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   StyleSheet,
@@ -9,9 +9,10 @@ import {
 } from "react-native";
 
 const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
-  const [name, setName] = useState(item.name);
-  const [price, setPrice] = useState(item.price.toString(), []);
-  const [quantity, setQuantity] = useState(item.quantity.toString(), []);
+  const [name, setName] = useState(item?.name, "");
+  const [price, setPrice] = useState(item?.price.toString(), 0);
+  const [quantity, setQuantity] = useState(item?.quantity.toString(), 0);
+  const [measure, setMeasure] = useState(item?.measure, "");
 
   const handleSave = () => {
     onSave({ name, price, quantity });
@@ -19,7 +20,12 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onPressIn={onClose}
+    >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
@@ -53,6 +59,16 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
                 value={quantity}
                 keyboardType="numeric"
                 onChangeText={setQuantity}
+              />
+            </View>
+          )}
+          {itemType === "stock" && ( // only show quantity for stock items}
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>Measure:</Text>
+              <TextInput
+                style={styles.formInput}
+                value={measure}
+                onChangeText={setMeasure}
               />
             </View>
           )}

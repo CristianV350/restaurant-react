@@ -7,42 +7,57 @@ import {
   Text,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-
-const DATA = [
-  { id: "1", name: "Checkpoint 1" },
-  { id: "2", name: "Checkpoint 2" },
-  { id: "3", name: "Checkpoint 3" },
-  { id: "4", name: "Checkpoint 4" },
-  { id: "5", name: "Checkpoint 5" },
-  { id: "6", name: "Checkpoint 6" },
-];
+import { useCheckpointStore } from "../store/checkpoint.reducer";
+import DetailsModal from "./Modal";
 
 export default function CheckpointList({ navigation }) {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [checkpoints, setCheckpoints] = useState(DATA);
+  const {
+    selectedCheckpoint,
+    checkpoints,
+    handleSetSelectedCheckpoint,
+    fetchCheckpoints,
+    updateCheckpoint,
+    addCheckpoint,
+  } = useCheckpointStore();
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [mode, setMode] = useState("view");
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filteredData = DATA.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setCheckpoints(filteredData);
+  useEffect(() => {
+    fetchCheckpoints();
+  }, []);
+
+  const handleSetSelectedItem = (item) => {
+    setSelectedItem(item);
+  };
+
+  const handleItemOnSave = async (item) => {
+    let checkpoint = await addCheckpoint(item);
+    if (!checkpoint) return;
+    setRows([...rows, checkpoint]);
+    handleItemOnClose();
+    handleItemOnClose();
+  };
+
+  const handleItemOnClose = () => {
+    setMode("view");
+    handleSetSelectedItem(null);
   };
 
   const handleAddCheckpoint = () => {
-    const newCheckpoint = {
-      id: `${checkpoints.length + 1}`,
-      name: `Checkpoint ${checkpoints.length + 1}`,
-    };
-    setCheckpoints([...checkpoints, newCheckpoint]);
+    setMode("edit");
+    handleSetSelectedItem({
+      name: "",
+      id: null,
+      address: "",
+    });
   };
 
   const renderItem = ({ item }) => {
     return (
-      <View style={styles.checkpointItem}>
+      <View style={global.itemContainer}>
         <TouchableOpacity
           key={item.id}
           onPress={() =>
@@ -57,14 +72,14 @@ export default function CheckpointList({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.searchBar}>
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search checkpoints..."
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
+      <DetailsModal
+        key={mode}
+        visible={mode === "edit"}
+        item={selectedItem}
+        onSave={handleItemOnSave}
+        onClose={handleItemOnClose}
+        itemType={"checkpoint"}
+      />
       <View style={styles.checkpointsList}>
         <FlatList
           data={checkpoints}
@@ -73,44 +88,26 @@ export default function CheckpointList({ navigation }) {
         />
       </View>
 
-      <View style={styles.actionBar}>
+      <View style={global.footer}>
         <TouchableOpacity
-          style={styles.addButton}
+          style={global.addButton}
           onPress={handleAddCheckpoint}
         >
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name="add" size={32} color="white" />
         </TouchableOpacity>
       </View>
     </View>
   );
 }
-
+import global from "../styles/style";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: "space-around",
   },
-  searchBar: {
-    padding: 16,
-    backgroundColor: "white",
-    borderBottomWidth: 1,
-    borderBottomColor: "#EFEFEF",
-  },
-  searchInput: {
-    padding: 8,
-    borderRadius: 8,
-    backgroundColor: "#F5F5F5",
-  },
   checkpointsList: {
     flex: 1,
-    padding: 16,
     alignContent: "center",
-  },
-  checkpointItem: {
-    backgroundColor: "white",
-    padding: 16,
-    borderRadius: 8,
-    marginBottom: 16,
   },
   checkpointName: {
     fontWeight: "bold",

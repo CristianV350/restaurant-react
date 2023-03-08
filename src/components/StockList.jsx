@@ -18,110 +18,109 @@ import {
 import DetailsModal from "./Modal";
 import useIngredientStore from "./../store/ingredients.reducer";
 
-function StockItem({
-  data,
-  selectedItem,
-  handleSetSelectedItem,
-  handleItemOnBlur,
-  debouncedHandleItemTextChange,
-  navigation,
-}) {
-  const [item, setItem] = useState(data);
-  const isEditing = selectedItem && selectedItem.id === item.id;
-
-  const handleOnBlur = () => {
-    handleItemOnBlur(item.id, categoryName);
-    handleSetSelectedItem(null);
+function StockItem({ item, handleSetSelectedItem, navigation, setMode }) {
+  const handleEdit = () => {
+    setMode("edit");
+    handleSetSelectedItem(item);
   };
 
-  const handleEdit = () => {
+  const handleDelete = () => {
+    setMode("delete");
     handleSetSelectedItem(item);
   };
 
   return (
     <View key={item.id} style={styles.itemContainer}>
-      <DetailsModal
-        visible={isEditing}
-        item={item}
-        onSave={handleOnBlur}
-        onClose={handleOnBlur}
-        itemType={"stock"}
-      />
-      <View style={styles.itemContent}>
+      <View>
         <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemCategory}>Item: {item.category}</Text>
-        <Text style={styles.itemQuantity}>Quantity: {item.quantity}</Text>
-        <Text style={styles.itemPrice}>Price: {item.price}</Text>
+        <View style={styles.itemContent}>
+          <Text style={styles.itemQuantity}>
+            Quantity:{" "}
+            <Span style={{ fontWeight: "bold" }}>{item.quantity}</Span>
+          </Text>
+          <Text style={styles.itemPrice}>
+            Price: <Span style={{ fontWeight: "bold" }}>{item.price}</Span>
+          </Text>
+        </View>
       </View>
-      <Menu style={styles.menu}>
+      <Menu style={global.menu}>
         <MenuTrigger>
           <Ionicons name="ellipsis-vertical" size={24} color="black" />
         </MenuTrigger>
         <MenuOptions customStyles={{ optionsContainer: { marginTop: -50 } }}>
           <MenuOption onSelect={() => handleEdit(item.id)}>
-            <Text style={styles.menuOption}>Edit</Text>
+            <Text style={global.menuOption}>Edit</Text>
           </MenuOption>
           <MenuOption onSelect={() => handleDelete(item.id)}>
-            <Text style={styles.menuOption}>Delete</Text>
+            <Text style={global.menuOption}>Delete</Text>
           </MenuOption>
         </MenuOptions>
       </Menu>
     </View>
   );
 }
-const StockList = ({ category, navigation }) => {
+const StockList = ({ category, checkpoint, navigation }) => {
   const { ingredients, fetchIngredients, updateIngredient, addIngredient } =
     useIngredientStore();
-  const [rows, setRows] = useState(ingredients);
   const [selectedItem, setSelectedItem] = useState(null);
+  const [mode, setMode] = useState("view");
 
   useEffect(() => {
     fetchIngredients(category.id);
   }, []);
 
-  const debouncedHandleItemTextChange = debounce(
-    (id, name) => updateItem(id, name),
-    500
-  );
-
   const handleSetSelectedItem = (item) => {
     setSelectedItem(item);
   };
-  const handleItemOnBlur = (id, name) => {
-    if (!name) return;
-    updateItem(id, name);
-  };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filteredData = categories.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setRows(filteredData);
+  const handleItemOnSave = (item) => {
+    console.log(checkpoint);
+    addIngredient({
+      ...item,
+      category_id: parseInt(category.id),
+      checkpoint_id: parseInt(checkpoint.id),
+    });
+    handleItemOnClose();
+  };
+  const handleItemOnClose = () => {
+    setMode("view");
+    handleSetSelectedItem(null);
   };
 
   const handleAddIngredient = async () => {
-    // const newItem = {
-    //   name: `Item ${ingredients.length + 1}`,
-    // };
-    // let item = await addIngredient(newItem);
-    // if (!item) return;
-    // setRows([...rows, item]);
+    handleSetSelectedItem({
+      id: null,
+      name: "",
+      quantity: 0,
+      price: 0,
+    });
+
+    setMode("edit");
   };
 
-  const renderItem = (item) => {
-    <StockItem
-      data={item}
-      selectedItem={selectedItem}
-      handleSetSelectedItem={handleSetSelectedItem}
-      debouncedHandleItemTextChange={debouncedHandleItemTextChange}
-      handleItemOnBlur={handleItemOnBlur}
-      navigation={navigation}
-    />;
+  const renderItem = (data) => {
+    const item = data.item;
+    return (
+      <StockItem
+        item={item}
+        selectedItem={selectedItem}
+        handleSetSelectedItem={handleSetSelectedItem}
+        setMode={setMode}
+        navigation={navigation}
+      />
+    );
   };
 
   return (
     <View style={styles.container}>
+      <DetailsModal
+        key={mode}
+        visible={mode === "edit"}
+        item={selectedItem}
+        onSave={handleItemOnSave}
+        onClose={handleItemOnClose}
+        itemType={"stock"}
+      />
       <MenuProvider>
         <FlatList
           data={ingredients}
@@ -129,9 +128,9 @@ const StockList = ({ category, navigation }) => {
           style={{ height: 200 }}
         />
       </MenuProvider>
-      <View style={styles.footer}>
+      <View style={global.footer}>
         <TouchableOpacity
-          style={styles.addButton}
+          style={global.addButton}
           onPress={handleAddIngredient}
         >
           <Ionicons name="add" size={32} color="white" />
@@ -141,65 +140,73 @@ const StockList = ({ category, navigation }) => {
   );
 };
 
+import global from "../styles/style";
+import { Span } from "@expo/html-elements";
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#F8F8F8",
   },
-  footer: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 32,
-    paddingTop: 16,
-    paddingBottom: 32,
-    position: "fixed",
-    right: 0,
-    bottom: 0,
-  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
-  },
-  addButton: {
-    backgroundColor: "#3CB371",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    justifyContent: "center",
-    alignItems: "center",
   },
   itemContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 15,
     backgroundColor: "#FFFFFF",
     borderBottomWidth: 1,
-    borderBottomColor: "#E5E5E5",
+    borderBottomColor: "#d0d0d0",
     position: "relative", // Add this to enable absolute positioning of Menu
   },
   itemContent: {
     flex: 1,
+    flexDirection: "row",
+    gap: 10,
   },
   itemName: {
-    fontSize: 16,
+    fontSize: 32,
+    marginBottom: 5,
     fontWeight: "bold",
   },
   itemSize: {
     fontSize: 14,
     color: "#8E8E8E",
   },
-  menu: {
-    width: 100,
-    marginLeft: "auto",
+  rowButtons: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 10,
   },
-  menuOption: {
+  enterButton: {
+    backgroundColor: "#79c006",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  enterButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
     fontSize: 16,
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-    Vertical: 8,
+    textAlign: "center",
+  },
+  deleteButton: {
+    backgroundColor: "#921",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  deleteButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
   },
 });
 

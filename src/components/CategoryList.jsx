@@ -7,65 +7,58 @@ import {
   FlatList,
   TextInput,
 } from "react-native";
+import {
+  Menu,
+  MenuOption,
+  MenuOptions,
+  MenuTrigger,
+  MenuProvider,
+} from "react-native-popup-menu";
 import { Ionicons } from "@expo/vector-icons";
 import debounce from "../utils/debounce";
 import useCategoryStore from "../store/category.reducer";
+import DetailsModal from "./Modal";
+import ConfirmationModal from "./ConfirmationModal";
 
-function CategoryItem({
-  item,
-  selectedCategory,
-  handleSetSelectedCategory,
-  handleCategoryOnBlur,
-  debouncedHandleCategoryTextChange,
-  navigation,
-}) {
-  const isEditing = selectedCategory && selectedCategory.id === item.id;
-  const [categoryName, setCategoryName] = useState(item.name);
-
-  const handleChangeText = (text) => {
-    setCategoryName(text);
-    debouncedHandleCategoryTextChange(item.id, text);
-  };
-
-  const handleOnBlur = () => {
-    handleCategoryOnBlur(item.id, categoryName);
-    handleSetSelectedCategory(null);
-  };
-
+function CategoryItem({ item, setMode, navigation, checkpoint }) {
   const handleEdit = () => {
+    setMode("edit");
     handleSetSelectedCategory(item);
   };
-
+  const handleDelete = () => {
+    setMode("delete");
+    handleSetSelectedCategory(item);
+  };
   return (
-    <View style={styles.categoryItem}>
+    <View style={global.itemContainer}>
       <TouchableOpacity style={styles.categoryContainer}>
-        {isEditing ? (
-          <TextInput
-            autoFocus={true}
-            style={styles.categoryNameInput}
-            value={categoryName}
-            onChangeText={handleChangeText}
-            onBlur={handleOnBlur}
-            onPointerEnter={handleOnBlur}
-            returnKeyType="done"
-          />
-        ) : (
-          <View style={styles.categoryNameContainer}>
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate("StockListScreen", { category: item })
-              }
+        <View style={styles.categoryNameContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate("StockListScreen", {
+                category: item,
+                checkpoint,
+              })
+            }
+          >
+            <Text style={styles.categoryName}>{item.name}</Text>
+          </TouchableOpacity>
+          <Menu style={global.menu}>
+            <MenuTrigger>
+              <Ionicons name="ellipsis-vertical" size={24} color="black" />
+            </MenuTrigger>
+            <MenuOptions
+              customStyles={{ optionsContainer: { marginTop: -50 } }}
             >
-              <Text style={styles.categoryName}>{item.name}</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.enterButton}>
-              <Text style={styles.enterButtonText} onPress={handleEdit}>
-                EDIT
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
+              <MenuOption onSelect={() => handleEdit(item.id)}>
+                <Text style={global.menuOption}>Edit</Text>
+              </MenuOption>
+              <MenuOption onSelect={() => handleDelete(item.id)}>
+                <Text style={global.menuOption}>Delete</Text>
+              </MenuOption>
+            </MenuOptions>
+          </Menu>
+        </View>
       </TouchableOpacity>
     </View>
   );
@@ -78,10 +71,12 @@ export default function CategoryList({ checkpoint, navigation }) {
     handleSetSelectedCategory,
     fetchCategories,
     updateCategory,
+    deleteCategory,
     addCategory,
   } = useCategoryStore();
-  const [searchQuery, setSearchQuery] = useState("");
   const [rows, setRows] = useState(categories);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [mode, setMode] = useState("view");
 
   useEffect(() => {
     fetchCategories();
@@ -91,64 +86,74 @@ export default function CategoryList({ checkpoint, navigation }) {
     setRows(categories);
   }, [categories]);
 
-  const debouncedHandleCategoryTextChange = debounce(
-    (id, name) => updateCategory(id, name),
-    500
-  );
-
-  const handleCategoryOnBlur = (id, name) => {
-    if (!name) return;
-    updateCategory(id, name);
+  const handleSetSelectedItem = (item) => {
+    setSelectedItem(item);
   };
 
-  const handleSearch = (query) => {
-    setSearchQuery(query);
-    const filteredData = categories.filter((item) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-    setRows(filteredData);
+  const handleItemOnSave = async (item) => {
+    let category = await addCategory(item);
+    if (!category) return;
+    setRows([...rows, category]);
+    handleItemOnClose();
+  };
+
+  const handleItemOnClose = () => {
+    setMode("view");
+    handleSetSelectedItem(null);
+  };
+
+  const handleItemOnConfirm = async (id) => {
+    setMode("view");
+    await deleteCategory(id);
+    handleSetSelectedItem(null);
   };
 
   const handleAddCategory = async () => {
-    const newCategory = {
-      name: `Category ${categories.length + 1}`,
-    };
-    let category = await addCategory(newCategory);
-    if (!category) return;
-    setRows([...rows, category]);
+    handleSetSelectedItem({
+      id: null,
+      name: "",
+    });
+
+    setMode("edit");
   };
 
   const renderItem = ({ item }) => (
     <CategoryItem
       item={item}
-      selectedCategory={selectedCategory}
-      handleSetSelectedCategory={handleSetSelectedCategory}
-      debouncedHandleCategoryTextChange={debouncedHandleCategoryTextChange}
-      handleCategoryOnBlur={handleCategoryOnBlur}
+      setMode={setMode}
       navigation={navigation}
+      checkpoint={checkpoint}
     />
   );
 
   return (
     <View style={global.container}>
-      <View style={global.searchContainer}>
-        <TextInput
-          style={global.searchInput}
-          placeholder="Search categories"
-          value={searchQuery}
-          onChangeText={handleSearch}
-        />
-      </View>
-      <FlatList
-        data={rows}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        extraData={selectedCategory}
+      <DetailsModal
+        visible={mode === "edit"}
+        item={selectedItem}
+        onSave={handleItemOnSave}
+        onClose={handleItemOnClose}
+        itemType={"category"}
       />
+      <ConfirmationModal
+        visible={mode === "delete"}
+        item={selectedItem}
+        onCOnfirm={handleItemOnConfirm}
+        onClose={handleItemOnClose}
+        itemType={"category"}
+      />
+      <MenuProvider>
+        <FlatList
+          data={rows}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id}
+          extraData={selectedCategory}
+        />
+      </MenuProvider>
 
-      <View style={global.actionBar}>
+      <View style={global.footer}>
         <TouchableOpacity style={global.addButton} onPress={handleAddCategory}>
-          <Ionicons name="add" size={24} color="white" />
+          <Ionicons name="add" size={32} color="white" />
         </TouchableOpacity>
       </View>
     </View>
@@ -157,24 +162,6 @@ export default function CategoryList({ checkpoint, navigation }) {
 
 import global from "../styles/style";
 const styles = StyleSheet.create({
-  categoryItem: {
-    backgroundColor: "#ffffff",
-    borderRadius: 8,
-    marginHorizontal: 16,
-    marginVertical: 8,
-    padding: 10,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
   categoryContainer: {
     width: "100%",
   },
@@ -183,15 +170,17 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: "100%",
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingVertical: 2,
-    marginVertical: 8,
-    marginHorizontal: 16,
   },
   categoryName: {
     fontSize: 18,
     marginLeft: 16,
     color: "#303334",
+  },
+  rowButtons: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "flex-end",
+    gap: 10,
   },
   enterButton: {
     backgroundColor: "#79c006",
@@ -201,6 +190,19 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   enterButtonText: {
+    color: "#fff",
+    fontWeight: "bold",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  deleteButton: {
+    backgroundColor: "#921",
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  deleteButtonText: {
     color: "#fff",
     fontWeight: "bold",
     fontSize: 16,

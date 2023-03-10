@@ -9,15 +9,28 @@ import {
 } from "react-native";
 
 const DetailsModal = ({ visible, onClose, item, onConfirm, itemType }) => {
+  console.log(item);
   const handleConfirm = () => {
     onConfirm(item.id);
     onClose();
   };
 
   return (
-    <Modal animationType="slide" transparent={true} visible={visible}>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <TouchableOpacity style={styles.modalOverlay} onPress={onClose}>
+        <View style={{ flex: 1 }}></View>
+      </TouchableOpacity>
+
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>
+            Vrei sa stergi categoria {item.name}?
+          </Text>
           <TouchableOpacity
             onPress={handleConfirm}
             style={styles.confirmButton}
@@ -31,29 +44,41 @@ const DetailsModal = ({ visible, onClose, item, onConfirm, itemType }) => {
 };
 
 const styles = StyleSheet.create({
+  modalOverlay: {
+    flex: 1,
+    position: "absolute",
+    height: "100%",
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
   modalContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
   },
   modalContent: {
     backgroundColor: "white",
     padding: 16,
     borderRadius: 8,
     width: "80%",
+    height: 150,
   },
   confirmButton: {
-    position: "absolute",
-    top: 8,
-    right: 8,
+    backgroundColor: "#292929",
+    padding: 16,
+    borderRadius: 8,
+    width: "250",
+    alignItems: "center",
   },
   confirmButtonText: {
     fontSize: 20,
     fontWeight: "bold",
+    color: "white",
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 16,
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",

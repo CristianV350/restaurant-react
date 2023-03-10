@@ -10,12 +10,13 @@ import {
 
 const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
   const [name, setName] = useState(item?.name, "");
-  const [price, setPrice] = useState(item?.price.toString(), 0);
-  const [quantity, setQuantity] = useState(item?.quantity.toString(), 0);
+  const [address, setAddress] = useState(item?.address, "");
+  const [price, setPrice] = useState(item?.price?.toString(), 0);
+  const [quantity, setQuantity] = useState(item?.quantity?.toString(), 0);
   const [measure, setMeasure] = useState(item?.measure, "");
 
   const handleSave = () => {
-    onSave({ name, price, quantity });
+    onSave({ name, price, quantity, measure, address });
     onClose();
   };
 
@@ -25,6 +26,7 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
       transparent={true}
       visible={visible}
       onPressIn={onClose}
+      onRequestClose={onClose}
     >
       <View style={styles.modalContainer}>
         <View style={styles.modalContent}>
@@ -40,6 +42,17 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
               onChangeText={setName}
             />
           </View>
+          {itemType === "checkpoint" && ( // only show price for stock items
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>Address:</Text>
+              <TextInput
+                style={styles.formInput}
+                value={address}
+                keyboardType="text"
+                onChangeText={setAddress}
+              />
+            </View>
+          )}
           {itemType === "stock" && ( // only show price for stock items
             <View style={styles.formGroup}>
               <Text style={styles.formLabel}>Price:</Text>

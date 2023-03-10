@@ -46,6 +46,9 @@ export function useCheckpointStore() {
   async function addCheckpoint(checkpoint) {
     let exists = state.checkpoints.find((c) => c.name === checkpoint.name);
     if (!exists) {
+      let result = await CheckpointService.save(checkpoint);
+      if (result.error) return;
+      checkpoint = result;
       dispatch({ type: "ADD_CHECKPOINT", payload: { ...checkpoint } });
     }
   }

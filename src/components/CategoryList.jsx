@@ -20,14 +20,20 @@ import useCategoryStore from "../store/category.reducer";
 import DetailsModal from "./Modal";
 import ConfirmationModal from "./ConfirmationModal";
 
-function CategoryItem({ item, setMode, navigation, checkpoint }) {
-  const handleEdit = () => {
+function CategoryItem({
+  item,
+  setMode,
+  navigation,
+  checkpoint,
+  handleSetSelectedItem,
+}) {
+  const handleEdit = (item) => {
     setMode("edit");
-    handleSetSelectedCategory(item);
+    handleSetSelectedItem(item);
   };
   const handleDelete = () => {
     setMode("delete");
-    handleSetSelectedCategory(item);
+    handleSetSelectedItem(item);
   };
   return (
     <View style={global.itemContainer}>
@@ -50,7 +56,7 @@ function CategoryItem({ item, setMode, navigation, checkpoint }) {
             <MenuOptions
               customStyles={{ optionsContainer: { marginTop: -50 } }}
             >
-              <MenuOption onSelect={() => handleEdit(item.id)}>
+              <MenuOption onSelect={() => handleEdit(item)}>
                 <Text style={global.menuOption}>Edit</Text>
               </MenuOption>
               <MenuOption onSelect={() => handleDelete(item.id)}>
@@ -75,7 +81,6 @@ export default function CategoryList({ checkpoint, navigation }) {
     addCategory,
   } = useCategoryStore();
   const [rows, setRows] = useState(categories);
-  const [selectedItem, setSelectedItem] = useState(null);
   const [mode, setMode] = useState("view");
 
   useEffect(() => {
@@ -87,7 +92,9 @@ export default function CategoryList({ checkpoint, navigation }) {
   }, [categories]);
 
   const handleSetSelectedItem = (item) => {
-    setSelectedItem(item);
+    console.log(item);
+    handleSetSelectedCategory(item);
+    console.log(selectedCategory);
   };
 
   const handleItemOnSave = async (item) => {
@@ -123,25 +130,30 @@ export default function CategoryList({ checkpoint, navigation }) {
       setMode={setMode}
       navigation={navigation}
       checkpoint={checkpoint}
+      handleSetSelectedItem={handleSetSelectedItem}
     />
   );
 
   return (
     <View style={global.container}>
-      <DetailsModal
-        visible={mode === "edit"}
-        item={selectedItem}
-        onSave={handleItemOnSave}
-        onClose={handleItemOnClose}
-        itemType={"category"}
-      />
-      <ConfirmationModal
-        visible={mode === "delete"}
-        item={selectedItem}
-        onCOnfirm={handleItemOnConfirm}
-        onClose={handleItemOnClose}
-        itemType={"category"}
-      />
+      {mode == "edit" && (
+        <DetailsModal
+          visible={mode === "edit"}
+          item={selectedCategory}
+          onSave={handleItemOnSave}
+          onClose={handleItemOnClose}
+          itemType={"category"}
+        />
+      )}
+      {mode == "delete" && (
+        <ConfirmationModal
+          visible={mode === "delete"}
+          item={selectedCategory}
+          onConfirm={handleItemOnConfirm}
+          onClose={handleItemOnClose}
+          itemType={"category"}
+        />
+      )}
       <MenuProvider>
         <FlatList
           data={rows}

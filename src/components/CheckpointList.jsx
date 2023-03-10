@@ -38,7 +38,6 @@ export default function CheckpointList({ navigation }) {
     if (!checkpoint) return;
     setRows([...rows, checkpoint]);
     handleItemOnClose();
-    handleItemOnClose();
   };
 
   const handleItemOnClose = () => {
@@ -81,11 +80,7 @@ export default function CheckpointList({ navigation }) {
         itemType={"checkpoint"}
       />
       <View style={styles.checkpointsList}>
-        <FlatList
-          data={checkpoints}
-          renderItem={renderItem}
-          keyExtractor={(item) => item.id}
-        />
+        <FlatList data={checkpoints} renderItem={renderItem} />
       </View>
 
       <View style={global.footer}>

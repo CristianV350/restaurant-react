@@ -33,7 +33,7 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
           <TouchableOpacity onPress={onClose} style={styles.closeButton}>
             <Text style={styles.closeButtonText}>X</Text>
           </TouchableOpacity>
-          <Text style={styles.modalTitle}>Edit {itemType} Details</Text>
+          <Text style={styles.modalTitle}>Edit {itemType}</Text>
           <View style={styles.formGroup}>
             <Text style={styles.formLabel}>Name:</Text>
             <TextInput
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   modalTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: "bold",
     marginBottom: 16,
     textAlign: "center",

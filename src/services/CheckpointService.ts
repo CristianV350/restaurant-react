@@ -8,7 +8,6 @@ export default {
     if (result.status !== 200) return { error: "There was an error processing your request" }
     if (!(result && result.data && result.data.result.length)) return []
     let checkpoints = result.data.result
-    console.log(checkpoints)
     return checkpoints;
   },
 

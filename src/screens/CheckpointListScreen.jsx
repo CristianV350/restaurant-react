@@ -13,7 +13,7 @@ export default function CheckpointListScreen({ navigation }) {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 40,
+    paddingTop: 0,
     flex: 1,
     backgroundColor: "#F8F8F8",
   },

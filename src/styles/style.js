@@ -3,8 +3,8 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fcf7fa",
-    paddingBottom: 100
+    backgroundColor: "#fff",
+    paddingBottom: 0
   },
   searchContainer: {
     flexDirection: "row",
@@ -14,24 +14,28 @@ export default StyleSheet.create({
   footer: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "center",
     paddingHorizontal: 32,
     paddingTop: 16,
-    paddingBottom: 32,
+    paddingBottom: 21,
     position: "fixed",
+    backgroundColor: "#333",
     right: 0,
     bottom: 0,
+    height: 60,
   },
   addButton: {
     backgroundColor: "#3CB371",
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 65,
+    height: 65,
+    borderRadius: "50%",
     justifyContent: "center",
     alignItems: "center",
+    position:"absolute",
+    bottom: 25
   },
   menu: {
-    width: 100,
+    width: 50,
     marginLeft: "auto",
   },
   menuOption: {

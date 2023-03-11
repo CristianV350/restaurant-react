@@ -18,6 +18,7 @@ function App() {
           <Stack.Screen name="CheckpointListScreen" component={CheckpointListScreen} />
           <Stack.Screen name="CategoryListScreen" component={CategoryListScreen} />
           <Stack.Screen name="StockListScreen" component={StockListScreen} />
+
         </Stack.Navigator>
       </NavigationContainer>
     </View>

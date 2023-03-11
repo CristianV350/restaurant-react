@@ -5,7 +5,7 @@ export let shared = {
     VUE_APP_CLIENT_ID: '',
     VUE_APP_API_SCHEME: 'https',
     VUE_APP_API_HOST: 'bonjourapi.herokuapp.com',
-    VUE_APP_API_PORT: '14873',
+    // VUE_APP_API_PORT: '14873',
     VUE_APP_API_SUBPATH: '/api',
   },
 }

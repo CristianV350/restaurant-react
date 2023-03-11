@@ -12,7 +12,6 @@
   },
   "dependencies": {
     "@expo/html-elements": "^0.4.1",
-    "@expo/webpack-config": "^0.17.2",
     "@react-navigation/native": "^6.1.5",
     "@react-navigation/stack": "^6.3.15",
     "@types/react": "~18.0.24",
@@ -33,6 +32,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",
+    "@expo/webpack-config": "^18.0.1",
     "expo-cli": "^6.3.2"
   },
   "private": true

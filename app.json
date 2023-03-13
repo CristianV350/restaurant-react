@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "restaurant-react",
-    "slug": "restaurant-react",
+    "slug": "stock-management",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -18,7 +18,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.shaimz.stockmanagement"
     },
     "android": {
       "adaptiveIcon": {
@@ -28,6 +29,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "d23a5504-e6e9-4629-ada5-869d77acbaac"
+      }
+    },
+    "owner": "shaimz"
   }
 }

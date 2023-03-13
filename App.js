@@ -6,21 +6,23 @@ import HomeScreen from './src/screens/HomeScreen';
 import CheckpointListScreen from './src/screens/CheckpointListScreen';
 import CategoryListScreen from './src/screens/CategoryListScreen';
 import StockListScreen from './src/screens/StockListScreen';
+import LeftMenu from './src/components/LeftMenu';
 
 const Stack = createStackNavigator();
 
 function App() {
   return (
     <View style={styles.container}>
-      <NavigationContainer>
-        <Stack.Navigator>
+      <LeftMenu ></LeftMenu>
+       {/* <NavigationContainer>
+         <Stack.Navigator>
           <Stack.Screen name="HomeScreen" component={HomeScreen} />
           <Stack.Screen name="CheckpointListScreen" component={CheckpointListScreen} />
           <Stack.Screen name="CategoryListScreen" component={CategoryListScreen} />
           <Stack.Screen name="StockListScreen" component={StockListScreen} />
 
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer>  */}
     </View>
   );
 }

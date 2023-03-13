@@ -4,7 +4,10 @@ import CategoryList from "../components/CategoryList";
 import { NavigationContainer } from "@react-navigation/native";
 
 export default function CategoryListScreen({ navigation, route }) {
-  const { checkpoint } = route.params;
+  let checkpoint = {};
+  if (route.params && route.params.checkpoint) {
+    checkpoint = route.params.checkpoint;
+  }
   return (
     <View style={styles.container}>
       <CategoryList

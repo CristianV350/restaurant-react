@@ -16,6 +16,12 @@ function HomeScreen({ navigation }) {
       >
         <Text style={styles.buttonText}>Go to Checkpoint List</Text>
       </TouchableOpacity>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => navigation.navigate("ArchiveScreen")}
+      >
+        <Text style={styles.buttonText}>Create New List</Text>
+      </TouchableOpacity>
     </View>
   );
 }

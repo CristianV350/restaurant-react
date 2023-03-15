@@ -1,44 +1,54 @@
 import React, { useState } from "react";
-import { View, Text, DatePickerAndroid, Button } from "react-native";
+import { View, Text, Button } from "react-native";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import moment from "moment";
+import { Platform } from "react-native";
+import ArchiveService from "../services/ArchiveService";
+import ArchiveList from "../components/ArchiveList";
+// import { Platform } from "react-native-web";
 
-const ArchiveScreen = () => {
+const ArchiveScreen = ({ navigation, route }) => {
+  let checkpoint = {};
+  if (route.params && route.params.checkpoint) {
+    checkpoint = route.params.checkpoint;
+  }
+
   const [startDate, setStartDate] = useState(null);
   const [endDate, setEndDate] = useState(null);
+  const [mode, setMode] = useState("date");
+  const [show, setShow] = useState(false);
 
-  const handleStartDateChange = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        date: startDate ? new Date(startDate) : new Date(),
-        mode: "spinner",
-      });
-
-      if (action !== DatePickerAndroid.dismissedAction) {
-        const date = new Date(year, month, day);
-        setStartDate(date);
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open date picker", message);
-    }
+  const handleStartDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setStartDate(currentDate);
   };
 
-  const handleEndDateChange = async () => {
-    try {
-      const { action, year, month, day } = await DatePickerAndroid.open({
-        date: endDate ? new Date(endDate) : new Date(),
-        mode: "spinner",
-      });
-
-      if (action !== DatePickerAndroid.dismissedAction) {
-        const date = new Date(year, month, day);
-        setEndDate(date);
-      }
-    } catch ({ code, message }) {
-      console.warn("Cannot open date picker", message);
-    }
+  const handleEndDateChange = (event, selectedDate) => {
+    const currentDate = selectedDate;
+    setShow(false);
+    setEndDate(currentDate);
   };
 
-  const generateStockList = () => {
+  const showMode = (currentMode) => {
+    if (Platform.OS === "android") {
+      setShow(false);
+      // for iOS, add a button that closes the picker
+    }
+    setMode(currentMode);
+  };
+
+  const showDatepicker = () => {
+    showMode("date");
+  };
+
+  const showTimepicker = () => {
+    showMode("time");
+  };
+
+  const generateStockList = async () => {
+    let pdf = await ArchiveService.export({});
+    console.log(pdf);
     if (!startDate || !endDate) {
       console.warn("Please select both start and end dates");
       return;
@@ -57,11 +67,20 @@ const ArchiveScreen = () => {
     <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
       <View style={{ marginBottom: 20 }}>
         <Text style={{ fontSize: 20 }}>Select start date:</Text>
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={mode}
+            is24Hour={true}
+            onChange={handleStartDateChange}
+          />
+        )}
         <Button
           title={
             startDate ? moment(startDate).format("MMM D, YYYY") : "Select date"
           }
-          onPress={handleStartDateChange}
+          onPress={showDatepicker}
         />
       </View>
       <View style={{ marginBottom: 20 }}>
@@ -70,10 +89,23 @@ const ArchiveScreen = () => {
           title={
             endDate ? moment(endDate).format("MMM D, YYYY") : "Select date"
           }
-          onPress={handleEndDateChange}
+          onPress={showTimepicker}
         />
+        {show && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={date}
+            mode={mode}
+            is24Hour={true}
+            onChange={handleEndDateChange}
+          />
+        )}
       </View>
       <Button title="Generate Stock List" onPress={generateStockList} />
+      <ArchiveList
+        navigation={navigation}
+        checkpoint={checkpoint}
+      ></ArchiveList>
     </View>
   );
 };

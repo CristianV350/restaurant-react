@@ -1,14 +1,14 @@
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+// import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './src/screens/HomeScreen';
 import CheckpointListScreen from './src/screens/CheckpointListScreen';
 import CategoryListScreen from './src/screens/CategoryListScreen';
 import StockListScreen from './src/screens/StockListScreen';
 import LeftMenu from './src/components/LeftMenu';
 
-const Stack = createStackNavigator();
+// const Stack = createStackNavigator();
 
 function App() {
   return (

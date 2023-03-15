@@ -10,13 +10,14 @@ import {
 
 const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
   const [name, setName] = useState(item?.name, "");
+  const [title, setTitle] = useState(item?.title, "");
   const [address, setAddress] = useState(item?.address, "");
   const [price, setPrice] = useState(item?.price?.toString(), 0);
   const [quantity, setQuantity] = useState(item?.quantity?.toString(), 0);
   const [measure, setMeasure] = useState(item?.measure, "");
 
   const handleSave = () => {
-    onSave({ name, price, quantity, measure, address });
+    onSave({ name, title, price, quantity, measure, address });
     onClose();
   };
 
@@ -42,6 +43,16 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
               onChangeText={setName}
             />
           </View>
+          {itemType === "archive" && ( // only show quantity for stock items}
+            <View style={styles.formGroup}>
+              <Text style={styles.formLabel}>Measure:</Text>
+              <TextInput
+                style={styles.formInput}
+                value={measure}
+                onChangeText={setMeasure}
+              />
+            </View>
+          )}
           {itemType === "checkpoint" && ( // only show price for stock items
             <View style={styles.formGroup}>
               <Text style={styles.formLabel}>Address:</Text>

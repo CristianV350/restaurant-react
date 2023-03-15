@@ -24,6 +24,7 @@ function CategoryItem({
   item,
   setMode,
   navigation,
+  archive,
   checkpoint,
   handleSetSelectedItem,
 }) {
@@ -44,6 +45,7 @@ function CategoryItem({
               navigation.navigate("StockListScreen", {
                 category: item,
                 checkpoint,
+                archive,
               })
             }
           >
@@ -70,7 +72,7 @@ function CategoryItem({
   );
 }
 
-export default function CategoryList({ checkpoint, navigation }) {
+export default function CategoryList({ checkpoint, archive, navigation }) {
   const {
     selectedCategory,
     categories,
@@ -130,6 +132,7 @@ export default function CategoryList({ checkpoint, navigation }) {
       setMode={setMode}
       navigation={navigation}
       checkpoint={checkpoint}
+      archive={archive}
       handleSetSelectedItem={handleSetSelectedItem}
     />
   );

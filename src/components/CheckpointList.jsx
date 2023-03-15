@@ -60,7 +60,7 @@ export default function CheckpointList({ navigation }) {
         <TouchableOpacity
           key={item.id}
           onPress={() =>
-            navigation.navigate("CategoryListScreen", { checkpoint: item })
+            navigation.navigate("ArchiveScreen", { checkpoint: item })
           }
         >
           <Text>{item.name}</Text>

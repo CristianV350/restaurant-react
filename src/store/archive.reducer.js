@@ -7,15 +7,11 @@ export default function useArchiveStore() {
   const [archives, setArchives] = useState([]);
 
   useEffect(() => {
-    fetchArchives();
-  }, []);
-
-  useEffect(() => {
     setArchives(archives);
   }, [archives]);
 
-  async function fetchArchives() {
-    const result = await ArchiveService.fetch();
+  async function fetchArchives(checkpoint_id) {
+    const result = await ArchiveService.search({ checkpoint_id });
     setArchives(result);
   }
 

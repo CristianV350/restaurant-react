@@ -7,12 +7,12 @@ export default {
   async fetch() {
     const result = await ClientApi(name, "fetch").get(`${url}`)
     if (!(result && result.data && result.status === 200)) return []
-    let categories = result.data
-    return categories;
+    let archives = result.data
+    return archives;
   },
 
   async get(id) {
-    const result = await ClientApi(name, "fetch").get(`${url}/${id}`)
+    const result = await ClientApi(name, "get").get(`${url}/${id}`)
     if (!(result && result.data && result.status === 200)) return []
     let archive = result.data
     return archive;
@@ -23,6 +23,14 @@ export default {
     let result = await ClientApi(name, 'save').post(`${url}`, jsonObj)
     if (!(result && result.data && result.status === 200)) return { error: 'The object could not be saved. Please try again.' }
     return result.data
+  },
+
+  async search(jsonObj) {
+    if (!jsonObj) return { error: 'Please provide a JSON with the following format { value: jsonValue }.' }
+    const result = await ClientApi(name, "search").post(`${url}/search`, jsonObj)
+    if (!(result && result.data && result.status === 200)) return []
+    let archives = result.data
+    return archives;
   },
 
   async update(id, jsonObj) {

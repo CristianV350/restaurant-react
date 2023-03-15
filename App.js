@@ -7,12 +7,16 @@ import CheckpointListScreen from './src/screens/CheckpointListScreen';
 import CategoryListScreen from './src/screens/CategoryListScreen';
 import StockListScreen from './src/screens/StockListScreen';
 import LeftMenu from './src/components/LeftMenu';
+import BackButton from './src/components/BackButton';
 
 // const Stack = createStackNavigator();
 
 function App() {
   return (
     <View style={styles.container}>
+      <NavigationContainer>
+        <BackButton></BackButton>
+      </NavigationContainer>
       <LeftMenu ></LeftMenu>
        {/* <NavigationContainer>
          <Stack.Navigator>

@@ -19,6 +19,7 @@ import debounce from "../utils/debounce";
 import useArchiveStore from "../store/archive.reducer";
 import DetailsModal from "./Modal";
 import ConfirmationModal from "./ConfirmationModal";
+import DateRangePicker from "../components/DateRangePicker";
 
 function ArchiveItem({
   item,
@@ -41,7 +42,7 @@ function ArchiveItem({
         <View style={styles.archiveNameContainer}>
           <TouchableOpacity
             onPress={() =>
-              navigation.navigate("StockListScreen", {
+              navigation.navigate("CategoryListScreen", {
                 archive: item,
                 checkpoint,
               })
@@ -84,7 +85,7 @@ export default function ArchiveList({ checkpoint, navigation }) {
   const [mode, setMode] = useState("view");
 
   useEffect(() => {
-    fetchArchives();
+    fetchArchives(checkpoint.id);
   }, []);
 
   useEffect(() => {
@@ -164,6 +165,8 @@ export default function ArchiveList({ checkpoint, navigation }) {
           extraData={selectedArchive}
         />
       </MenuProvider>
+
+      <DateRangePicker></DateRangePicker>
 
       <View style={global.footer}>
         <TouchableOpacity style={global.addButton} onPress={handleAddArchive}>

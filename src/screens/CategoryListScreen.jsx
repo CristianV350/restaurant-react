@@ -8,11 +8,16 @@ export default function CategoryListScreen({ navigation, route }) {
   if (route.params && route.params.checkpoint) {
     checkpoint = route.params.checkpoint;
   }
+  let archive = {};
+  if (route.params && route.params.archive) {
+    archive = route.params.archive;
+  }
   return (
     <View style={styles.container}>
       <CategoryList
         navigation={navigation}
         checkpoint={checkpoint}
+        archive={archive}
       ></CategoryList>
     </View>
   );

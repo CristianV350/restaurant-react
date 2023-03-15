@@ -59,7 +59,7 @@ function StockItem({ item, handleSetSelectedItem, navigation, setMode }) {
     </View>
   );
 }
-const StockList = ({ category, checkpoint, navigation }) => {
+const StockList = ({ category, checkpoint, archive, navigation }) => {
   const { ingredients, fetchIngredients, updateIngredient, addIngredient } =
     useIngredientStore();
   const [selectedItem, setSelectedItem] = useState(null);
@@ -79,6 +79,7 @@ const StockList = ({ category, checkpoint, navigation }) => {
       ...item,
       category_id: parseInt(category.id),
       checkpoint_id: parseInt(checkpoint.id),
+      archive_id: parseInt(archive.id),
     });
     handleItemOnClose();
   };

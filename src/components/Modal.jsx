@@ -43,16 +43,6 @@ const DetailsModal = ({ visible, onClose, item, onSave, itemType }) => {
               onChangeText={setName}
             />
           </View>
-          {itemType === "archive" && ( // only show quantity for stock items}
-            <View style={styles.formGroup}>
-              <Text style={styles.formLabel}>Measure:</Text>
-              <TextInput
-                style={styles.formInput}
-                value={measure}
-                onChangeText={setMeasure}
-              />
-            </View>
-          )}
           {itemType === "checkpoint" && ( // only show price for stock items
             <View style={styles.formGroup}>
               <Text style={styles.formLabel}>Address:</Text>

@@ -7,13 +7,15 @@ import CheckpointListScreen from "../screens/CheckpointListScreen";
 import CategoryListScreen from "../screens/CategoryListScreen";
 import StockListScreen from "../screens/StockListScreen";
 import ArchiveScreen from "../screens/ArchiveScreen";
+import BackButton from "../components/BackButton";
 
 const Drawer = createDrawerNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <Drawer.Navigator initialRouteName="Home">
+      <BackButton></BackButton>
+      <Drawer.Navigator initialRouteName="Home" backBehavior="history">
         <Drawer.Screen name="Home" component={HomeScreen} />
         <Drawer.Screen
           name="CheckpointListScreen"

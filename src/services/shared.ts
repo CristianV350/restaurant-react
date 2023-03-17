@@ -7,4 +7,3 @@ export let shared = {
     VUE_APP_API_HOST: 'bonjourapi.herokuapp.com',
     VUE_APP_API_SUBPATH: '/api',
   },
-}

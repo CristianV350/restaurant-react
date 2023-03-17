@@ -99,7 +99,7 @@ export default function ArchiveList({ checkpoint, navigation }) {
   };
 
   const handleItemOnSave = async (item) => {
-    let archive = await addArchive(item);
+    let archive = await addArchive({ ...item, checkpoint_id: checkpoint.id });
     if (!archive) return;
     setRows([...rows, archive]);
     handleItemOnClose();

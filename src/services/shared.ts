@@ -1,12 +1,13 @@
+import { REACT_APP_API_HOST, REACT_APP_API_SCHEME, REACT_APP_API_PORT, REACT_APP_API_SUBPATH } from "@env"
 
 export let shared = {
   env: {
-    VUE_APP_DEBUG: '',
-    VUE_APP_ISSUER: '',
-    VUE_APP_CLIENT_ID: '',
-    VUE_APP_API_SCHEME: process.env.VUE_APP_API_SCHEME || 'http',
-    VUE_APP_API_HOST: process.env.VUE_APP_API_HOST || 'localhost',
-    VUE_APP_API_PORT: process.env.VUE_APP_API_PORT,
-    VUE_APP_API_SUBPATH: process.env.VUE_APP_API_SUBPATH || '/api'
+    REACT_APP_DEBUG: '',
+    REACT_APP_ISSUER: '',
+    REACT_APP_CLIENT_ID: '',
+    REACT_APP_API_SCHEME: REACT_APP_API_SCHEME || 'http',
+    REACT_APP_API_HOST: REACT_APP_API_HOST || 'localhost',
+    REACT_APP_API_PORT: REACT_APP_API_PORT,
+    REACT_APP_API_SUBPATH: REACT_APP_API_SUBPATH || '/api'
   },
 }

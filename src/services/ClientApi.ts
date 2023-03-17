@@ -5,10 +5,10 @@ const baseUrlFromParts = (port, subpath) => {
   if (port) port = `:${port}`
   if (!subpath.startsWith('/')) subpath = `/${subpath}`
   /** Structure: ${scheme}://${host}:${port}/${subpath} */
-  return `${shared.env.VUE_APP_API_SCHEME}://${shared.env.VUE_APP_API_HOST}${port || ''}${subpath || ''}`
+  return `${shared.env.REACT_APP_API_SCHEME}://${shared.env.REACT_APP_API_HOST}${port || ''}${subpath || ''}`
 }
 
-const apiBaseUrl = () => baseUrlFromParts(shared.env.VUE_APP_API_PORT, shared.env.VUE_APP_API_SUBPATH)
+const apiBaseUrl = () => baseUrlFromParts(shared.env.REACT_APP_API_PORT, shared.env.REACT_APP_API_SUBPATH)
 
 
 export default (clientName, opName) => {

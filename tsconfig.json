@@ -1,4 +1,8 @@
 {
   "compilerOptions": {},
-  "extends": "expo/tsconfig.base"
+  "extends": "expo/tsconfig.base",
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*.ts", "environment.d.ts"]
 }

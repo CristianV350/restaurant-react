@@ -4,10 +4,10 @@ declare global {
     interface ProcessEnv {
       GITHUB_AUTH_TOKEN: string;
       NODE_ENV: 'development' | 'production';
-      VUE_APP_API_SCHEME: string;
-      VUE_APP_API_HOST: string;
-      VUE_APP_API_PORT: string;
-      VUE_APP_API_SUBPATH: string;
+      VUE_APP_API_SCHEME?: string;
+      VUE_APP_API_HOST?: string;
+      VUE_APP_API_PORT?: string;
+      VUE_APP_API_SUBPATH?: string;
     }
   }
 }
